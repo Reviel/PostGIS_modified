@@ -1,0 +1,90 @@
+==============================================================================
+Project Description
+==============================================================================
+This Project is a modification based on PostGIS-3.4.1, retaining only the 
+source code of liblwgeom and raster. The original build method has been 
+abandoned, and CMake has been made to the introduced source code.
+
+The following modifications are involved:
+
+1. Removal of the static keyword: The static keyword has been removed from 
+functions like gserialized2_from_lwgeom_any.
+
+2. Memory copy for point collections: References to point collections in 
+functions like lwgeom_from_gserialized2_buffer have been changed to memory 
+copies to better handle multithreading and custom memory.
+
+3. Introduction of new structures: A new structure LWGEOM_CONTEXT has been 
+added, along with lwcontext functions and other macros and structures. 
+Original global variables such as tflags, lwgeom_geos_errmsg, pj_ctx, 
+variables and functions used for parsing WKT, and parameters like geos_ctx 
+required for calling thread-safe GEOS functions have been moved into this 
+structure, and all related references have been modified.
+
+4. Reentrancy support: PostGIS was originally designed for PostgreSQL's
+multi-process architecture, without full consideration for thread safety. 
+To adapt to multi-thread environments, we have modified certain functions 
+to be reentrant.
+
+5. Custom JSON memory handing: The function lwgeom_set_json_handlers has been 
+added to allow for custom memory management when calling the JSON library.
+
+6. Support for GML curve types: Some functions have been modified to support 
+parsing curve types in GML.
+
+7. New functions: New functions such as option_list_geos_parse have been added.
+
+8. Version information: A function to output version information has been added 
+to librt_core.so.
+
+9. Bug fixes and error detection: Some bugs have been fixed, and additional 
+checks have been added to detect potential errors.
+
+10. Code simplification: Based on the original PostGIS codebase, only selected portions of the liblwgeom and raster modules have been retained.
+
+11. Removed the original compilation scripts and build methods, and adopted 
+CMake for building.
+
+
+==============================================================================
+The following files may have been modified by DAMENG.
+==============================================================================
+liblwgeom/gserialized2.c
+liblwgeom/lwgeom_api.c
+liblwgeom/lwgeom_debug.c
+liblwgeom/lwgeom_geos.c
+liblwgeom/lwgeom_geos.h
+liblwgeom/lwgeom_geos_clean.c
+liblwgeom/lwgeom_geos_cluster.c
+liblwgeom/lwgeom_geos_node.c
+liblwgeom/lwgeom_geos_split.c
+liblwgeom/lwgeom_sfcgal.c
+liblwgeom/lwgeom_topo.c
+liblwgeom/lwgeom_transform.c
+liblwgeom/lwgeom_wkt.h
+liblwgeom/lwgeom_wkt_lex.c
+liblwgeom/lwgeom_wkt_lex.l
+liblwgeom/lwgeom_wkt_parse.c
+liblwgeom/lwgeom_wkt_parse.h
+liblwgeom/lwgeom_wkt_parse.y
+liblwgeom/lwin_encoded_polyline.c
+liblwgeom/lwlinearreferencing.c
+liblwgeom/lwout_gml.c
+liblwgeom/lwout_twkb.c
+liblwgeom/lwout_twkb.h
+liblwgeom/lwout_wkb.c
+liblwgeom/lwout_wkt.c
+liblwgeom/lwstroke.c
+liblwgeom/lwutil.c
+liblwgeom/optionlist.c
+liblwgeom/optionlist.h
+raster/rtcore/librtcore.h
+raster/rtcore/rt_band.c
+raster/rtcore/rt_context.c
+raster/rtcore/rt_gdal.c
+raster/rtcore/rt_geometry.c
+raster/rtcore/rt_raster.c
+raster/rtcore/rt_serialize.c
+raster/rtcore/rt_spatial_relationship.c
+raster/rtcore/rt_statistics.c
+raster/rtcore/rt_wkb.c
